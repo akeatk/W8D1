@@ -1,1 +1,3 @@
-json.username user.username
+json.set! user.id do
+  json.username user.username
+end

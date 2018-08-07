@@ -181,8 +181,22 @@ var _root2 = _interopRequireDefault(_root);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 document.addEventListener('DOMContentLoaded', function () {
-  var store = (0, _store2.default)();
+  var store = void 0;
+  if (window.currentUser) {
+    var preloadedState = {
+      entities: {
+        users: _defineProperty({}, window.currentUser.id, window.currentUser)
+      },
+      session: { id: window.currentUser.id }
+    };
+    store = (0, _store2.default)(preloadedState);
+    // delete window.currentUser;
+  } else {
+    store = (0, _store2.default)();
+  }
   var root = document.getElementById('root');
   window.getState = store.getState;
   window.dispatch = store.dispatch;
@@ -473,8 +487,6 @@ var _session_actions = __webpack_require__(/*! ../actions/session_actions */ "./
 
 var _lodash = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 var usersReducer = function usersReducer() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   var action = arguments[1];
@@ -483,7 +495,7 @@ var usersReducer = function usersReducer() {
   var newState = (0, _lodash.merge)({}, state);
   switch (action.type) {
     case _session_actions.RECEIVE_CURRENT_USER:
-      return (0, _lodash.merge)(newState, _defineProperty({}, action.user.id, action.user));
+      return (0, _lodash.merge)(newState, action.user);
     default:
       return state;
   }
